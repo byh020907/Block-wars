@@ -202,7 +202,7 @@ public class MainGameState extends GameState{
 		if(Mouse.getButton()==1){
 			user.attack(Util.obtainAngle(width*scale/2, height*scale/2, Mouse.getX(), Mouse.getY()));
 		}
-		tf.content=new StringBuffer((((Gun)(user.getWeapon())).currentCapacity/((Gun)(user.getWeapon())).magazineCapacity)*((Gun)(user.getWeapon())).magazineCapacity+"/"+(((Gun)(user.getWeapon())).currentCapacity%((Gun)(user.getWeapon())).magazineCapacity));
+		tf.content=new StringBuffer((((Gun)(user.getWeapon())).currentCapacity%((Gun)(user.getWeapon())).magazineCapacity)+"/"+(((Gun)(user.getWeapon())).currentCapacity/((Gun)(user.getWeapon())).magazineCapacity)*((Gun)(user.getWeapon())).magazineCapacity);
 	}
 	
 	@Override
