@@ -32,12 +32,22 @@ public class MenuState extends GameState{
 		bb.setDepth(0.2);
 		bb.clickEvent=new CallbackEvent(){
 			public void callbackMethod(){
-				gsm.setState(GameStateManager.LOGIN_STATE);
+				gsm.setState(GameStateManager.SIGN_UP_STATE);
 			}
 		};
 		AudioPlayer.BACKGROUND.play();
 	}
-
+	
+	@Override
+	protected void network() {
+		
+	}
+	
+	@Override
+	public void reset() {
+		UI.list=new ConcurrentHashMap<Double,UI>();
+	}
+	
 	@Override
 	public void update() {
 		UI.updateAll();
@@ -55,14 +65,6 @@ public class MenuState extends GameState{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void reset() {
-		Player.list=new ConcurrentHashMap<Double,Player>();
-		Bullet.list=new ConcurrentHashMap<Double,Bullet>();
-		Particle.list=new CopyOnWriteArrayList<Particle>();
-		UI.list=new ConcurrentHashMap<Double,UI>();
 	}
 
 	@Override

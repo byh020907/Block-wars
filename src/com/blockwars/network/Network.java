@@ -25,13 +25,17 @@ public class Network {
 	static{
 		try {
 			socket=new DatagramSocket();
-			buffer=new byte[65507];
-			receivePacket=new DatagramPacket(buffer, buffer.length);
 			ia=InetAddress.getByName("10.156.145.131");//10.156.145.131
 			port=5000;
+			init();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void init(){
+		buffer=new byte[65507];
+		receivePacket=new DatagramPacket(buffer, buffer.length);
 	}
 	
 	public static void send(JSONObject sendData,InetAddress address,int port){

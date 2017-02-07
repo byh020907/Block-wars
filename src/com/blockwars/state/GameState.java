@@ -12,6 +12,7 @@ public abstract class GameState {
 	protected GameStateManager gsm;
 	
 	public abstract void init();
+	protected abstract void network();
 	public abstract void reset();
 	public abstract void update();
 	public abstract void render(Screen screen);
@@ -23,6 +24,9 @@ public abstract class GameState {
 	public ReceiveLoop receiveLoop;
 	
 	public class SendLoop extends Thread{
+		public SendLoop(){
+			this.setName("SendLoop");
+		}
 		@Override
 		public void run() {
 			while(true){
@@ -32,6 +36,9 @@ public abstract class GameState {
 	}
 	
 	public class ReceiveLoop extends Thread{
+		public ReceiveLoop(){
+			this.setName("ReceiveLoop");
+		}
 		@Override
 		public void run() {
 			while(true){

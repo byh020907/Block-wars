@@ -12,11 +12,15 @@ public class GameStateManager {
 	
 	public static final int MENU_STATE = 0;
 	public static final int LOGIN_STATE=1;
-	public static final int MAINGAME_STATE=2;
+	public static final int SIGN_UP_STATE=2;
+	public static final int LOBBY_STATE=3;
+	public static final int MAINGAME_STATE=4;
 	
 	public GameStateManager(){
 		gameStates.add(new MenuState(this));
 		gameStates.add(new LoginState(this));
+		gameStates.add(new SignUpState(this));
+		gameStates.add(new LobbyState(this));
 		gameStates.add(new MainGameState(this));
 		setState(MENU_STATE);
 	}

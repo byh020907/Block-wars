@@ -15,7 +15,7 @@ public class Main{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		gcc();
+//		gcc();
 	}
 	
 	public static void gcc(){

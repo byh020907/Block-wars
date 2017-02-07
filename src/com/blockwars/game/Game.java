@@ -24,7 +24,7 @@ public class Game extends JPanel implements Runnable{
 	public static int width=300;
 	public static int height=width/16*9;
 	public static int scale=3;
-	public static String title="Summer-Wars";
+	public static String title="Block-wars";
 	
 	private Thread thread;
 	

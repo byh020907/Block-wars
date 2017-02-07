@@ -138,8 +138,12 @@ public class MainGameState extends GameState{
 		network();
 	}
 	
-	private void network(){
+	protected void network(){
 		try{
+			sendLoop=new SendLoop();
+			sendLoop.start();
+			receiveLoop=new ReceiveLoop();
+			receiveLoop.start();
 			JSONObject data1=new JSONObject();
 			data1.put("protocol", "enter");
 			data1.put("enteredPlayer", jsonParser.parse(gson.toJson(user)));
@@ -148,14 +152,27 @@ public class MainGameState extends GameState{
 			Network.send(data1, ia, port);
 			Thread.sleep(1);
 			Network.send(data2, ia, port);
-			sendLoop=new SendLoop();
-			sendLoop.start();
-			receiveLoop=new ReceiveLoop();
-			receiveLoop.start();
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void reset() {
+		sendLoop.stop();
+		receiveLoop.stop();
+		
+		if(screen!=null){
+			screen.clear();
+		}
+		user=null;
+		Player.list=new ConcurrentHashMap<Double,Player>();
+		Bullet.list=new ConcurrentHashMap<Double,Bullet>();
+		Particle.list=new CopyOnWriteArrayList<Particle>();
+		Item.list=new ConcurrentHashMap<Double,Item>();
+		UI.list=new ConcurrentHashMap<Double,UI>();
+		map=null;
 	}
 
 	@Override
@@ -228,22 +245,6 @@ public class MainGameState extends GameState{
 		}
 	}
 
-	@Override
-	public void reset() {
-		sendLoop.stop();
-		receiveLoop.stop();
-		
-		if(screen!=null){
-			screen.clear();
-		}
-		user=null;
-		Player.list=new ConcurrentHashMap<Double,Player>();
-		Bullet.list=new ConcurrentHashMap<Double,Bullet>();
-		Particle.list=new CopyOnWriteArrayList<Particle>();
-		Item.list=new ConcurrentHashMap<Double,Item>();
-		UI.list=new ConcurrentHashMap<Double,UI>();
-		map=null;
-	}
 	int count=1;
 	@Override
 	public void sendData() {
@@ -284,11 +285,11 @@ public class MainGameState extends GameState{
 			switch((String)receiveData.get("protocol")){
 				
 				case "init":{
-					JSONArray a=(JSONArray)(receiveData.get("initPack"));
-					for(Object key:a.toArray()){
-						JSONObject b=(JSONObject) key;
+					JSONArray ja=(JSONArray)(receiveData.get("initPack"));
+					for(Object key:ja.toArray()){
+						JSONObject ob=(JSONObject) key;
 						
-						Player player=gson.fromJson(b.toString(), Player.class);
+						Player player=gson.fromJson(ob.toString(), Player.class);
 						player.dummy=true;
 						switch(player.playerType){
 							case Player.GRASS:{
