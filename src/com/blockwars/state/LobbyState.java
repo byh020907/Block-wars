@@ -60,8 +60,9 @@ public class LobbyState extends GameState{
 			@Override
 			public void callbackMethod() {
 				JSONObject data1=new JSONObject();
-				data1.put("protocol", "removeRoom");
-				data1.put("id", 0.2);
+				data1.put("protocol", "exitRoom");
+				data1.put("roomId", 1.1);
+				data1.put("id", LoginState.user.id);
 				Network.send(data1, Network.ia, Network.port);
 				for(double key:rm.getRoom(1.1).list.keySet()){
 					User user=rm.getRoom(1.1).list.get(key);
@@ -138,7 +139,7 @@ public class LobbyState extends GameState{
 		int i=0;
 		for(double key:rm.list.keySet()){
 			Room room=rm.getRoom(key);
-			g2D.drawImage(Resource.pauseImg,300,i*100,200,100,null);
+			g2D.drawImage(Resource.pauseImg,300,i*100,200,80,null);
 			i++;
 		}
 	}
@@ -171,6 +172,10 @@ public class LobbyState extends GameState{
 				case "enterRoom":{
 					JSONObject userData=(JSONObject)receiveData.get("user");
 					rm.getRoom((double)receiveData.get("roomId")).addUser(gson.fromJson(userData.toString(), User.class));
+				}break;
+				
+				case "exitRoom":{
+					rm.getRoom((double)receiveData.get("roomId")).removeUser((double)receiveData.get("id"));
 				}break;
 				
 				case "initRoomManager":{

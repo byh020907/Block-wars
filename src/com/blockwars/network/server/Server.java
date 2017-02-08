@@ -164,7 +164,9 @@ public class Server {
 					case "exitRoom":{
 						rm.getRoom((double)receiveData.get("roomId")).removeUser((double)receiveData.get("id"));
 						
-						howToSend = HowToSend.SEND_EXCEPT_SELF;
+						sendData=receiveData;
+						
+						howToSend = HowToSend.BROADCAST;
 					}break;
 					
 					case "initRoomManager":{
