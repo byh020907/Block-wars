@@ -9,7 +9,7 @@ public class RoomManager {
 		//lobby
 		Room lobby=new Room();
 		lobby.id=1.1;
-		list.put(lobby.id, lobby);
+		addRoom(lobby);
 	}
 	
 	public void addRoom(Room room){

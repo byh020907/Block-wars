@@ -23,14 +23,6 @@ import com.google.gson.Gson;
 
 public class LoginState extends GameState{
 	
-	JSONParser jsonParser=Network.jsonParser;
-	Gson gson=Network.gson;
-	
-	public DatagramSocket socket=Network.socket;
-	public DatagramPacket receivePacket=Network.receivePacket;
-	public InetAddress ia=Network.ia;
-	public int port=Network.port;
-	
 	public static User user;
 
 	UI_TextField tf1;

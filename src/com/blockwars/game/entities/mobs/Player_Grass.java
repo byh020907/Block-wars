@@ -1,6 +1,6 @@
 package com.blockwars.game.entities.mobs;
 
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.graphics.Sprite;
 import com.blockwars.utils.Util;
 
@@ -15,7 +15,7 @@ public class Player_Grass extends Player{
 		if(flag){
 			flag=false;
 			double s=speed;
-			Util.setTimeout(1000, new CallbackEventClass(new Object[]{s}){
+			Util.setTimeout(1000, new CallbackEvent_Argument(new Object[]{s}){
 				@Override
 				public void callbackMethod() {
 					speed=(double)objs[0];

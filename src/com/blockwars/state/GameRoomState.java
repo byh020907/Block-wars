@@ -7,7 +7,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.blockwars.CallbackEvent;
-import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.UI.UI;
 import com.blockwars.UI.UI_Button;
 import com.blockwars.UI.UI_List;
@@ -18,87 +17,72 @@ import com.blockwars.network.server.Room;
 import com.blockwars.network.server.RoomManager;
 import com.blockwars.network.server.User;
 
-public class LobbyState extends GameState{
+public class GameRoomState extends GameState{
 	
-	public static RoomManager rm=new RoomManager();
-	public static double currentRoomId=1.2;
-	
-	UI_List list;
-	
-	public LobbyState(GameStateManager gsm){
+	public RoomManager rm=LobbyState.rm;
+
+	public GameRoomState(GameStateManager gsm) {
 		this.gsm=gsm;
 	}
 
 	@Override
 	public void init() {
 		
-		list=new UI_List(Resource.blankImg,300,100,200,400);
-		list.setDepth(-1);
+		UI_List list=new UI_List(Resource.blankImg,300,0,200,400);
+		list.setDepth(-0.001);
 		
 		UI_Button b1=new UI_Button(Resource.startImg,0,0,100,100);
 		b1.clickEvent=new CallbackEvent(){
 			@Override
 			public void callbackMethod() {
-				try {
-					JSONObject data1=new JSONObject();
-					data1.put("protocol", "addRoom");
-					Room room=new Room();
-					data1.put("addedRoom", jsonParser.parse(gson.toJson(room)));
-					Network.send(data1, Network.ia, Network.port);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		UI_Button b2=new UI_Button(Resource.startImg,100,0,100,100);
-		b2.clickEvent=new CallbackEvent(){
-			@Override
-			public void callbackMethod() {
-				JSONObject data1=new JSONObject();
-				data1.put("protocol", "exitRoom");
-				data1.put("roomId", 1.1);
-				data1.put("id", LoginState.user.id);
-				Network.send(data1, Network.ia, Network.port);
-				for(double key:rm.getRoom(1.1).list.keySet()){
-					User user=rm.getRoom(1.1).list.get(key);
+				for(double key:rm.getRoom(LobbyState.currentRoomId).list.keySet()){
+					User user=rm.getRoom(LobbyState.currentRoomId).list.get(key);
 					System.out.println(user.ID);
 				}
 			}
 		};
 		
+		UI_Button b2=new UI_Button(Resource.startImg,b1.x+100,0,100,100);
+		b2.clickEvent=new CallbackEvent(){
+			@Override
+			public void callbackMethod() {
+				list.addButton(null);
+			}
+		};
+		
+		UI_Button b3=new UI_Button(Resource.startImg,b2.x+100,0,100,100);
+		b3.clickEvent=new CallbackEvent(){
+			@Override
+			public void callbackMethod() {
+				list.removeButton(0);
+			}
+		};
+		
+		int startX=100;
+		int startY=100;
+		int width=100;
+		int height=100;
+		for(int y=0;y<2;y++){
+			for(int x=0;x<2;x++){
+				UI_Button b=new UI_Button(Resource.blankImg,startX+x*width,startY+y*height,width,height);
+			}
+		}
+		
 		network();
+		
 	}
-	
+
 	@Override
 	protected void network() {
 		try {
-			
-			Network.init();
-			receiveLoop=new ReceiveLoop();
-			receiveLoop.start();
-			
-			for(int i=0;i<2;i++){
-				JSONObject data3=new JSONObject();
-				data3.put("protocol", "initRoomManager");
-				Network.send(data3, Network.ia, Network.port);
-				Thread.sleep(1);
-			}
-			
-			//로비에 입장 (id=1.1)
+			//게임방에 입장 (id!=1.1)
 			{
 				JSONObject data1=new JSONObject();
 				data1.put("protocol", "initRoom");
-				data1.put("roomId", 1.1);
+				data1.put("roomId", LobbyState.currentRoomId);
+				System.out.println(LobbyState.currentRoomId);
 				Network.send(data1, Network.ia, Network.port);
-				Thread.sleep(1);
-				
-				JSONObject data2=new JSONObject();
-				data2.put("protocol", "enterRoom");
-				data2.put("roomId", 1.1);
-				data2.put("user", jsonParser.parse(gson.toJson(LoginState.user)));
-				Network.send(data2, Network.ia, Network.port);
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -106,17 +90,12 @@ public class LobbyState extends GameState{
 
 	@Override
 	public void reset() {
-		receiveLoop.stop();
-		receiveLoop=null;
 		UI.list=new ConcurrentHashMap<Double,UI>();
 	}
-	boolean flag=false;
+
 	@Override
 	public void update() {
 		UI.updateAll();
-		if(flag){
-			gsm.setState(GameStateManager.GAMEROOM_STATE);
-		}
 	}
 
 	@Override
@@ -126,11 +105,7 @@ public class LobbyState extends GameState{
 
 	@Override
 	public void draw(Graphics2D g2D) {
-		try {
-			UI.renderAll(g2D);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		UI.renderAll(g2D);
 	}
 
 	@Override
@@ -143,8 +118,8 @@ public class LobbyState extends GameState{
 		try {
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-			System.out.println(receiveData.get("protocol"));
 			//처리
+			System.out.println(receiveData.get("protocol"));
 			switch((String)receiveData.get("protocol")){
 			
 				case "initRoom":{
@@ -163,10 +138,7 @@ public class LobbyState extends GameState{
 					JSONObject userData=(JSONObject)receiveData.get("user");
 					User user=gson.fromJson(userData.toString(), User.class);
 					rm.getRoom((double)receiveData.get("roomId")).addUser(user);
-					if(LoginState.user.equals(user)&&(double)receiveData.get("roomId")!=1.1){
-						currentRoomId=(double)receiveData.get("roomId");
-						flag=true;
-					}
+					System.out.print(user.ID);
 				}break;
 				
 				case "exitRoom":{
@@ -193,27 +165,6 @@ public class LobbyState extends GameState{
 					
 					if(rm.getRoom(room.id)==null){
 						rm.addRoom(room);
-						list.addButton(new CallbackEvent(){
-							@Override
-							public void callbackMethod() {
-								try {
-									JSONObject data1=new JSONObject();
-									data1.put("protocol", "exitRoom");
-									data1.put("roomId", 1.1);
-									data1.put("id", LoginState.user.id);
-									Network.send(data1, Network.ia, Network.port);
-									Thread.sleep(1);
-									
-									JSONObject data=new JSONObject();
-									data.put("protocol", "enterRoom");
-									data.put("roomId", room.id);
-									data.put("user", jsonParser.parse(gson.toJson(LoginState.user)));
-									Network.send(data, ia, port);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						});
 					}
 				}break;
 				

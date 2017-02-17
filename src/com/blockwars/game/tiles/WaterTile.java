@@ -1,6 +1,6 @@
 package com.blockwars.game.tiles;
 
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.game.entities.mobs.Mob;
 import com.blockwars.graphics.Sprite;
 import com.blockwars.utils.Util;
@@ -22,7 +22,7 @@ public class WaterTile extends Tile{
 			flag=false;
 			mob.inWater=true;
 			double s=mob.speed;
-			Util.setTimeout(100, new CallbackEventClass(new Object[]{s}){
+			Util.setTimeout(100, new CallbackEvent_Argument(new Object[]{s}){
 				@Override
 				public void callbackMethod() {
 					mob.speed=(double)objs[0];

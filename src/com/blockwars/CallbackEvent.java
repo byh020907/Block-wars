@@ -1,5 +1,5 @@
 package com.blockwars;
 
-public interface CallbackEvent {
-	public void callbackMethod();
+public abstract class CallbackEvent implements CallbackAble{
+	public abstract void callbackMethod();
 }

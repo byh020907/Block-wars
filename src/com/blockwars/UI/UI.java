@@ -47,6 +47,10 @@ public class UI {
 		}
 	}
 	
+	public synchronized void changeImage(Image image){
+		this.image=image;
+	}
+	
 	public void setDepth(double depth){
 		list.remove(this.id);
 		list.put(depth, this);
@@ -60,5 +64,9 @@ public class UI {
 	
 	public void update(){
 		
+	}
+	
+	public void remove(){
+		list.remove(this.id);
 	}
 }

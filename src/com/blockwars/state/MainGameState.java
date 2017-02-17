@@ -50,14 +50,6 @@ import com.sun.glass.events.KeyEvent;
 
 public class MainGameState extends GameState{
 	
-	JSONParser jsonParser=Network.jsonParser;
-	Gson gson=Network.gson;
-	
-	public DatagramSocket socket=Network.socket;
-	public DatagramPacket receivePacket=Network.receivePacket;
-	public InetAddress ia=Network.ia;
-	public int port=Network.port;
-	
 	public static int width=300;
 	public static int height=width/16*9;
 	public static int scale=3;

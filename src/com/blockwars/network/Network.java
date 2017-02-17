@@ -25,7 +25,7 @@ public class Network {
 	static{
 		try {
 			socket=new DatagramSocket();
-			ia=InetAddress.getByName("10.156.145.131");//10.156.145.131
+			ia=InetAddress.getByName("localhost");//10.156.145.131
 			port=5000;
 			init();
 		} catch (Exception e) {

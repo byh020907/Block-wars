@@ -1,6 +1,6 @@
 package com.blockwars.game.entities.mobs;
 
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.game.weapon.Gun;
 import com.blockwars.graphics.Sprite;
 import com.blockwars.utils.Util;
@@ -16,7 +16,7 @@ public class Player_GrassSide extends Player{
 		if(flag){
 			flag=false;
 			int attackSpeed=((Gun)weapons[currentSelectNum]).attackSpeed;
-			Util.setTimeout(1500, new CallbackEventClass(new Object[]{attackSpeed,currentSelectNum}){
+			Util.setTimeout(1500, new CallbackEvent_Argument(new Object[]{attackSpeed,currentSelectNum}){
 				@Override
 				public void callbackMethod() {
 					((Gun)weapons[(int)objs[1]]).attackSpeed=(int)objs[0];

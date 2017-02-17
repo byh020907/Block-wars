@@ -5,7 +5,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 import com.blockwars.CallbackEvent;
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.UI.UI;
 import com.blockwars.game.entities.Entity;
 import com.blockwars.game.tiles.Tile;
@@ -31,7 +31,7 @@ public class Util {
 		t.start();
 	}
 	
-	public static void setTimeout(int time,CallbackEventClass callbackEventClass){
+	public static void setTimeout(int time,CallbackEvent_Argument callbackEventClass){
 		Thread t=new Thread(){
 			public void run(){
 				try {

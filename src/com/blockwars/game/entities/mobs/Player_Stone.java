@@ -2,7 +2,7 @@ package com.blockwars.game.entities.mobs;
 
 import org.json.simple.JSONObject;
 
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.game.entities.bullets.Bullet;
 import com.blockwars.game.entities.bullets.ReflectBullet;
 import com.blockwars.graphics.Sprite;
@@ -21,7 +21,7 @@ public class Player_Stone extends Player{
 			flag=false;
 			double s=speed;
 			double d=damage;
-			Util.setTimeout(1000, new CallbackEventClass(new Object[]{s,d}){
+			Util.setTimeout(1000, new CallbackEvent_Argument(new Object[]{s,d}){
 				@Override
 				public void callbackMethod() {
 					speed=(double)objs[0];

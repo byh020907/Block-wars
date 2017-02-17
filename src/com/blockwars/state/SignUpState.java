@@ -24,14 +24,6 @@ import com.google.gson.Gson;
 
 public class SignUpState extends GameState{
 	
-	JSONParser jsonParser=Network.jsonParser;
-	Gson gson=Network.gson;
-	
-	public DatagramSocket socket=Network.socket;
-	public DatagramPacket receivePacket=Network.receivePacket;
-	public InetAddress ia=Network.ia;
-	public int port=Network.port;
-	
 	UI_TextField tf1;
 	UI_TextField tf2;
 	UI_TextField tf3;

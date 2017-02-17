@@ -157,7 +157,6 @@ public class Server {
 						rm.getRoom((double)receiveData.get("roomId")).addUser(gson.fromJson(userData.toString(), User.class));
 						
 						sendData=receiveData;
-						
 						howToSend = HowToSend.BROADCAST;
 					}break;
 					

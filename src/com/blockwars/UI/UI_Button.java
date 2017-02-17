@@ -5,14 +5,14 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
-import com.blockwars.CallbackEvent;
+import com.blockwars.CallbackAble;
 import com.blockwars.input.Mouse;
 import com.blockwars.utils.Util;
 
 	
 public class UI_Button extends UI{
 	
-	public CallbackEvent clickEvent;
+	public CallbackAble clickEvent;
 	private boolean entered=false;
 	private boolean pressed=false;
 	public UI_Button(Image image,int x,int y,int width,int height){

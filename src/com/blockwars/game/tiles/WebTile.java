@@ -2,7 +2,7 @@ package com.blockwars.game.tiles;
 
 import org.json.simple.JSONObject;
 
-import com.blockwars.CallbackEventClass;
+import com.blockwars.CallbackEvent_Argument;
 import com.blockwars.game.entities.MoveEntity;
 import com.blockwars.game.entities.mobs.Mob;
 import com.blockwars.graphics.Sprite;
@@ -29,7 +29,7 @@ public class WebTile extends Tile {
 			flag=false;
 			mob.inWeb=true;
 			double s=mob.speed;
-			Util.setTimeout(1000, new CallbackEventClass(new Object[]{s}){
+			Util.setTimeout(1000, new CallbackEvent_Argument(new Object[]{s}){
 				@Override
 				public void callbackMethod() {
 					Map map=MainGameState.map;
