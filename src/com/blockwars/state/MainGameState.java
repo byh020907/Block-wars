@@ -60,10 +60,12 @@ public class MainGameState extends GameState{
 	public static Player user;
 	public static Map map;
 	
+	UI_TextField tf;
+	
 	public MainGameState(GameStateManager gsm){
 		this.gsm=gsm;
 	}
-	UI_TextField tf;
+	
 	@Override
 	public void init() {
 		//이후 이 부분은 플래이어의 정보를 생성자로받아 for문으로 생성

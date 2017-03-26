@@ -20,7 +20,7 @@ import com.blockwars.sound.AudioPlayer;
 
 public class MenuState extends GameState{
 	
-	public MenuState(GameStateManager gsm) {
+	public MenuState(GameStateManager gsm){
 		this.gsm=gsm;
 	}
 
@@ -32,7 +32,7 @@ public class MenuState extends GameState{
 		bb.setDepth(0.2);
 		bb.clickEvent=new CallbackEvent(){
 			public void callbackMethod(){
-				gsm.setState(GameStateManager.SIGN_UP_STATE);
+				gsm.setState(GameStateManager.MAINGAME_STATE);
 			}
 		};
 		AudioPlayer.BACKGROUND.play();

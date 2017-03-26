@@ -28,10 +28,10 @@ public class SignUpState extends GameState{
 	UI_TextField tf2;
 	UI_TextField tf3;
 	
+
 	public SignUpState(GameStateManager gsm){
 		this.gsm=gsm;
 	}
-
 	@Override
 	public void init() {
 		UI_Background background=new UI_Background(Resource.UI_background,-1000,0,2000,800);
@@ -80,6 +80,7 @@ public class SignUpState extends GameState{
 	
 	@Override
 	protected void network() {
+		System.out.println(socket.getLocalPort());
 		receiveLoop=new ReceiveLoop();
 		receiveLoop.start();
 	}
@@ -124,6 +125,7 @@ public class SignUpState extends GameState{
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 			//Ã³¸®
+			System.out.println((String)receiveData.get("protocol"));
 			switch((String)receiveData.get("protocol")){
 				case "signUp":{
 					if(!(boolean)receiveData.get("isExist")){

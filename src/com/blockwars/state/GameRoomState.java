@@ -20,11 +20,10 @@ import com.blockwars.network.server.User;
 public class GameRoomState extends GameState{
 	
 	public RoomManager rm=LobbyState.rm;
-
-	public GameRoomState(GameStateManager gsm) {
+	
+	public GameRoomState(GameStateManager gsm){
 		this.gsm=gsm;
 	}
-
 	@Override
 	public void init() {
 		

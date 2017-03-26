@@ -1,5 +1,7 @@
 package com.blockwars.network.server;
 
+import java.awt.Color;
+import java.awt.Container;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -7,16 +9,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.blockwars.game.entities.bullets.Bullet;
-import com.blockwars.game.entities.items.Item;
 import com.blockwars.game.entities.mobs.Player;
-import com.blockwars.utils.Util;
 import com.google.gson.Gson;
 
 class UserIP {
@@ -29,23 +34,25 @@ class UserIP {
 	}
 }
 
-public class Server {
+public class Server extends JFrame{
 
 	Socket socket;
 	JSONParser jsonParser = new JSONParser();
 	Gson gson = new Gson();
 
 	DatagramSocket serverSocket;
-	static byte[] buffer = new byte[65507];
+	byte[] buffer = new byte[65507];
 	ArrayList<BufferedWriter> in = new ArrayList<BufferedWriter>();
 	
 	RoomManager rm=new RoomManager();
 	
-	static ConcurrentHashMap<Double, User> users = new ConcurrentHashMap<Double, User>();
-	static ConcurrentHashMap<Double, UserIP> clients = new ConcurrentHashMap<Double, UserIP>();
+	JTextArea ta=new JTextArea();
+	
+	ConcurrentHashMap<Double, User> users = new ConcurrentHashMap<Double, User>();
+	HashSet<UserIP> clients = new HashSet<UserIP>();
 	// MainGameState
-	static ConcurrentHashMap<Double, Player> players = new ConcurrentHashMap<Double, Player>();
-	static ConcurrentHashMap<Double, Bullet> bullets = new ConcurrentHashMap<Double, Bullet>();
+	ConcurrentHashMap<Double, Player> players = new ConcurrentHashMap<Double, Player>();
+	ConcurrentHashMap<Double, Bullet> bullets = new ConcurrentHashMap<Double, Bullet>();
 
 	interface HowToSend {
 		int SEND_TO_SELF = 1;
@@ -78,6 +85,21 @@ public class Server {
 		}
 	}
 	public void once(){
+		setTitle("");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Container contentPane=this.getContentPane();
+		setContentPane(contentPane);
+		contentPane.setBackground(Color.WHITE);
+//		contentPane.setLayout(new FlowLayout());
+		
+		ta.setSize(this.getWidth(), this.getHeight());
+		JScrollPane scrollPane=new JScrollPane(ta);
+		contentPane.add(scrollPane);
+		
+		setSize(500,500);
+		setResizable(false);
+		setVisible(true);
+		
 		Thread gameLoop = new GameLoop();
 		gameLoop.start();
 		rm.list.get(1.1);
@@ -89,7 +111,7 @@ public class Server {
 			DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
 			int howToSend = 0;
 			once();
-			System.out.println("server start port:" + serverSocket.getLocalPort());
+			printLog("server start port:" + serverSocket.getLocalPort());
 			while (true) {
 				// 서버 소켓의 receive 메서드를 호출하여
 				// 데이터가 들어올때까지 대기.
@@ -98,7 +120,8 @@ public class Server {
 				JSONObject receiveData = (JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 				// 처리
 				JSONObject sendData = new JSONObject();
-				switch ((String) receiveData.get("protocol")) {
+				printLog((String)receiveData.get("protocol"));
+				switch ((String)receiveData.get("protocol")) {
 
 					// SignUpState
 					//signUp: 회원가입
@@ -124,7 +147,6 @@ public class Server {
 						User user=new User((String) receiveData.get("ID"),(String) receiveData.get("password"));
 						sendData.put("protocol", "login");
 						sendData.put("isExist", false);
-						clients.put(user.id, new UserIP(receivePacket.getAddress(), receivePacket.getPort()));
 						for(double key:users.keySet()){
 							User u=users.get(key);
 							if(u.equals(user)){
@@ -133,6 +155,9 @@ public class Server {
 								sendData.put("user", jsonParser.parse(gson.toJson(user)));
 								break;
 							}
+						}
+						if((boolean) sendData.get("isExist")){
+							clients.add(new UserIP(receivePacket.getAddress(), receivePacket.getPort()));
 						}
 						howToSend = HowToSend.SEND_TO_SELF;
 					}break;
@@ -222,12 +247,13 @@ public class Server {
 	
 						Player p = gson.fromJson(playerData.toString(), Player.class);
 						players.put(p.id, p);
+						clients.add(new UserIP(receivePacket.getAddress(), receivePacket.getPort()));
 	
 						sendData.put("protocol", "enter");
 						sendData.put("enteredPlayer", playerData);
 	
 						howToSend = HowToSend.SEND_EXCEPT_SELF;
-						System.out.println("enter:" + p.id);
+						printLog("enter:" + p.id);
 					}break;
 	
 					case "playerMove": {
@@ -260,7 +286,7 @@ public class Server {
 	
 					case "attack": {
 						sendData = receiveData;
-	
+						
 						howToSend = HowToSend.SEND_EXCEPT_SELF;
 					}break;
 	
@@ -270,17 +296,17 @@ public class Server {
 						sendData = receiveData;
 	
 						howToSend = HowToSend.SEND_EXCEPT_SELF;
-						System.out.println("exit:" + receiveData.get("id"));
+						printLog("exit:" + receiveData.get("id"));
 					}break;
 					
 					default:{
-						System.out.println("unknownProtocol:server");
+						printLog("unknownProtocol:server");
 					}break;
 
 				// broadcast
 				}
 				if(sendData.get("protocol")==null){
-					System.out.println(sendData);
+					printLog(sendData);
 				}
 				// 끝
 				switch (howToSend) {
@@ -302,7 +328,7 @@ public class Server {
 					}break;
 					
 					default:{
-						System.out.println("error");
+						printLog("error");
 					}break;
 				
 				}
@@ -324,12 +350,11 @@ public class Server {
 
 	private void broadcast(JSONObject sendData) {
 		try {
-			for (double key : clients.keySet()) {
-				UserIP ip = clients.get(key);
-
+			for (UserIP ip : clients) {
 				DatagramPacket sendPacket = new DatagramPacket(sendData.toString().getBytes(), 0,
 						sendData.toString().getBytes().length, ip.address, ip.port);
 				serverSocket.send(sendPacket);
+				printLog(ip.port);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -338,8 +363,7 @@ public class Server {
 
 	private void sendExceptSelf(JSONObject sendData, InetAddress address, int port) {
 		try {
-			for (double key : clients.keySet()) {
-				UserIP ip = clients.get(key);
+			for (UserIP ip : clients) {
 
 				if (!(ip.address == address && ip.port == port)) {
 					DatagramPacket sendPacket = new DatagramPacket(sendData.toString().getBytes(), 0,
@@ -351,9 +375,20 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
+	
+	private void printLog(Object content){
+		ta.append(content.toString()+"\n");
+		System.out.println(content);
+		ta.setCaretPosition(ta.getDocument().getLength());
+	}
+	
+	private void restart(){
+		
+	}
 
+	static Server g;
 	public static void main(String args[]) {
-		Server g = new Server();
+		g= new Server();
 		g.init();
 	}
 

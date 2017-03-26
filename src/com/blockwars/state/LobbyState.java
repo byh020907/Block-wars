@@ -24,6 +24,7 @@ public class LobbyState extends GameState{
 	public static double currentRoomId=1.2;
 	
 	UI_List list;
+	UI_List playerList;
 	
 	public LobbyState(GameStateManager gsm){
 		this.gsm=gsm;
@@ -50,6 +51,7 @@ public class LobbyState extends GameState{
 				}
 			}
 		};
+		
 		UI_Button b2=new UI_Button(Resource.startImg,100,0,100,100);
 		b2.clickEvent=new CallbackEvent(){
 			@Override
@@ -66,6 +68,10 @@ public class LobbyState extends GameState{
 			}
 		};
 		
+		playerList=new UI_List(Resource.blankImg,500,100,200,400);
+		playerList.setDepth(-1);
+		
+		
 		network();
 	}
 	
@@ -76,13 +82,12 @@ public class LobbyState extends GameState{
 			Network.init();
 			receiveLoop=new ReceiveLoop();
 			receiveLoop.start();
+			Thread.sleep(1);
 			
-			for(int i=0;i<2;i++){
-				JSONObject data3=new JSONObject();
-				data3.put("protocol", "initRoomManager");
-				Network.send(data3, Network.ia, Network.port);
-				Thread.sleep(1);
-			}
+			JSONObject data3=new JSONObject();
+			data3.put("protocol", "initRoomManager");
+			Network.send(data3, Network.ia, Network.port);
+			Thread.sleep(1);
 			
 			//로비에 입장 (id=1.1)
 			{
@@ -156,6 +161,9 @@ public class LobbyState extends GameState{
 						if(rm.getRoom((double)receiveData.get("roomId")).getUser(user.id)==null){
 							rm.getRoom((double)receiveData.get("roomId")).addUser(user);
 						}
+						if((double)receiveData.get("roomId")==1.1){
+							playerList.addButton(null);
+						}
 					}
 				}break;
 			
@@ -163,13 +171,21 @@ public class LobbyState extends GameState{
 					JSONObject userData=(JSONObject)receiveData.get("user");
 					User user=gson.fromJson(userData.toString(), User.class);
 					rm.getRoom((double)receiveData.get("roomId")).addUser(user);
+					
 					if(LoginState.user.equals(user)&&(double)receiveData.get("roomId")!=1.1){
 						currentRoomId=(double)receiveData.get("roomId");
 						flag=true;
 					}
+					
+					if((double)receiveData.get("roomId")==1.1){
+						playerList.addButton(null);
+					}
 				}break;
 				
 				case "exitRoom":{
+					if((double)receiveData.get("roomId")==1.1){
+						playerList.removeButton(0);
+					}
 					rm.getRoom((double)receiveData.get("roomId")).removeUser((double)receiveData.get("id"));
 				}break;
 				

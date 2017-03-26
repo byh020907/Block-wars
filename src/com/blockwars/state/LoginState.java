@@ -29,7 +29,7 @@ public class LoginState extends GameState{
 	UI_TextField tf2;
 	UI_TextField tf3;
 	
-	public LoginState(GameStateManager gsm) {
+	public LoginState(GameStateManager gsm){
 		this.gsm=gsm;
 	}
 	
@@ -117,6 +117,7 @@ public class LoginState extends GameState{
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 			//Ã³¸®
+			System.out.println((String)receiveData.get("protocol"));
 			switch((String)receiveData.get("protocol")){
 				case "login":{
 					if((boolean)receiveData.get("isExist")){
