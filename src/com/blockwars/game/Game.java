@@ -13,7 +13,6 @@ import com.blockwars.graphics.Screen;
 import com.blockwars.input.Keyboard;
 import com.blockwars.input.Mouse;
 import com.blockwars.state.GameStateManager;
-import com.sun.glass.events.WindowEvent;
 
 
 public class Game extends JPanel implements Runnable{
@@ -46,8 +45,11 @@ public class Game extends JPanel implements Runnable{
 		init();
 	}
 	
+	public Thread sendLoop;
+	public Thread receiveLoop;
+	
 	private void init(){
-		//À©µµ¿ì¹Ù Ç¥½Ã¿©ºÎ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¿ï¿½ï¿½ï¿½
 //		frame.setUndecorated(true);
 		//
 		frame.setResizable(false);
@@ -70,8 +72,35 @@ public class Game extends JPanel implements Runnable{
 		
 		screen=new Screen(width,height);
 		gsm=new GameStateManager();
+		
+		sendLoop=new Thread(){
+			@Override
+			public void run() {
+				while(true){
+					gsm.sendData();
+					if(this.isInterrupted()){
+						break;
+					}
+				}
+			}
+		};
+		
+		receiveLoop=new Thread(){
+			@Override
+			public void run() {
+				while(true){
+					gsm.receiveData();
+					if(this.isInterrupted()){
+						break;
+					}
+				}
+			}
+		};
+		sendLoop.start();
+		receiveLoop.start();
 		start();
 	}
+
 	
 	public synchronized void start(){
 		running=true;

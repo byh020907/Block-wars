@@ -25,7 +25,7 @@ public class Network {
 	static{
 		try {
 			socket=new DatagramSocket();
-			ia=InetAddress.getByName("localhost");//10.156.145.131
+			ia=InetAddress.getByName("localhost");//10.156.145.110
 			port=5000;
 			init();
 		} catch (Exception e) {
@@ -36,6 +36,11 @@ public class Network {
 	public static void init(){
 		buffer=new byte[65507];
 		receivePacket=new DatagramPacket(buffer, buffer.length);
+		
+		//Thread상에서 socket.accept()에서 블록상태가 유지되는것을 해제하기위한dummy패킷
+		JSONObject data=new JSONObject();
+		data.put("protocol", "dummy");
+		Network.send(data,Network.ia,Network.port);
 	}
 	
 	public static void send(JSONObject sendData,InetAddress address,int port){

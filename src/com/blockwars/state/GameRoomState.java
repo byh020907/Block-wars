@@ -74,7 +74,9 @@ public class GameRoomState extends GameState{
 	@Override
 	protected void network() {
 		try {
-			//°ÔÀÓ¹æ¿¡ ÀÔÀå (id!=1.1)
+			Network.init();
+			
+			//ï¿½ï¿½ï¿½Ó¹æ¿¡ ï¿½ï¿½ï¿½ï¿½ (id!=1.1)
 			{
 				JSONObject data1=new JSONObject();
 				data1.put("protocol", "initRoom");
@@ -117,7 +119,7 @@ public class GameRoomState extends GameState{
 		try {
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-			//Ã³¸®
+			//Ã³ï¿½ï¿½
 			System.out.println(receiveData.get("protocol"));
 			switch((String)receiveData.get("protocol")){
 			

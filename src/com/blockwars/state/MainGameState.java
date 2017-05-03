@@ -1,6 +1,7 @@
 package com.blockwars.state;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -45,7 +46,6 @@ import com.blockwars.input.Mouse;
 import com.blockwars.network.Network;
 import com.blockwars.utils.Util;
 import com.google.gson.Gson;
-import com.sun.glass.events.KeyEvent;
 
 
 public class MainGameState extends GameState{
@@ -68,7 +68,7 @@ public class MainGameState extends GameState{
 	
 	@Override
 	public void init() {
-		//ÀÌÈÄ ÀÌ ºÎºÐÀº ÇÃ·¡ÀÌ¾îÀÇ Á¤º¸¸¦ »ý¼ºÀÚ·Î¹Þ¾Æ for¹®À¸·Î »ý¼º
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú·Î¹Þ¾ï¿½ forï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		screen=Game.screen;
 		
 		map=new Map(new String[]{
@@ -133,11 +133,10 @@ public class MainGameState extends GameState{
 	}
 	
 	protected void network(){
+		
+		Network.init();
+		
 		try{
-			sendLoop=new SendLoop();
-			sendLoop.start();
-			receiveLoop=new ReceiveLoop();
-			receiveLoop.start();
 			JSONObject data1=new JSONObject();
 			data1.put("protocol", "enter");
 			data1.put("enteredPlayer", jsonParser.parse(gson.toJson(user)));
@@ -154,8 +153,6 @@ public class MainGameState extends GameState{
 	
 	@Override
 	public void reset() {
-		sendLoop.stop();
-		receiveLoop.stop();
 		
 		if(screen!=null){
 			screen.clear();
@@ -275,7 +272,7 @@ public class MainGameState extends GameState{
 		try {
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-			//Ã³¸®
+			//Ã³ï¿½ï¿½
 			switch((String)receiveData.get("protocol")){
 				
 				case "init":{
@@ -395,7 +392,7 @@ public class MainGameState extends GameState{
 				}break;
 
 				case "playerMove":{
-					//ConcurrentHashMapµ¥ÀÌÅÍ¸¦ ¹Þ¾Æ µ¥µå·¹Ä¿´×  ±â¹ýÀ¸·Î Ã³¸®ÇÑ´Ù.
+					//ConcurrentHashMapï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾ï¿½ ï¿½ï¿½ï¿½å·¹Ä¿ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
 					Player p=Player.list.get((double)receiveData.get("id"));
 					if(p!=null){
 						p.x=(double)receiveData.get("x");
@@ -454,7 +451,7 @@ public class MainGameState extends GameState{
 				}break;
 				
 				case "attack":{
-					//ConcurrentHashMapµ¥ÀÌÅÍ¸¦ ¹Þ¾Æ µ¥µå·¹Ä¿´×  ±â¹ýÀ¸·Î Ã³¸®ÇÑ´Ù.
+					//ConcurrentHashMapï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾ï¿½ ï¿½ï¿½ï¿½å·¹Ä¿ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
 					if(Player.list.get(receiveData.get("parentId"))!=null){
 						int bulletType=Util.toInt(receiveData.get("bulletType"));
 						switch(bulletType){

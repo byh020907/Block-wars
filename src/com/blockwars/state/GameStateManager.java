@@ -47,4 +47,12 @@ public class GameStateManager {
 	public void draw(Graphics2D g2D) {
 		list.get(currentState).draw(g2D);
 	}
+	
+	public void sendData(){
+		list.get(currentState).sendData();
+	}
+	
+	public void receiveData(){
+		list.get(currentState).receiveData();
+	}
 }	

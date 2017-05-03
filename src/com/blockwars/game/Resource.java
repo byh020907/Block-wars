@@ -6,9 +6,9 @@ import javax.swing.ImageIcon;
 import com.blockwars.utils.Util;
 
 public interface Resource {
-	Image startImg=Util.loadImage(new ImageIcon("res/images/UI/½ÃÀÛ.png"));
-	Image pauseImg=Util.loadImage(new ImageIcon("res/images/UI/ÀÏ½ÃÁ¤Áö.png"));
-	Image homeImg=Util.loadImage(new ImageIcon("res/images/UI/È¨.png"));
+	Image startImg=Util.loadImage(new ImageIcon("res/images/UI/ì‹œì‘.png"));
+	Image pauseImg=Util.loadImage(new ImageIcon("res/images/UI/ì¼ì‹œì •ì§€.png"));
+	Image homeImg=Util.loadImage(new ImageIcon("res/images/UI/í™ˆ.png"));
 	Image UI_background=Util.loadImage(new ImageIcon("res/images/UI/UI_background1.png"));
 	Image blankImg=Util.loadImage(new ImageIcon("res/images/UI/blankImage.png"));
 }

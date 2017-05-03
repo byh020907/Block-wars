@@ -106,25 +106,30 @@ public class Server extends JFrame{
 	}
 	public void init() {
 		try {
-			// ¼­¹ö¼ÒÄÏÀ» »ý¼º
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			serverSocket = new DatagramSocket(5000);
 			DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
 			int howToSend = 0;
 			once();
 			printLog("server start port:" + serverSocket.getLocalPort());
 			while (true) {
-				// ¼­¹ö ¼ÒÄÏÀÇ receive ¸Þ¼­µå¸¦ È£ÃâÇÏ¿©
-				// µ¥ÀÌÅÍ°¡ µé¾î¿Ã¶§±îÁö ´ë±â.
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ receive ï¿½Þ¼ï¿½ï¿½å¸¦ È£ï¿½ï¿½ï¿½Ï¿ï¿½
+				// ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½.
 				serverSocket.receive(receivePacket);
-				// ¹ÞÀº µ¥ÀÌÅ¸
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸
 				JSONObject receiveData = (JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-				// Ã³¸®
+				// Ã³ï¿½ï¿½
 				JSONObject sendData = new JSONObject();
-				printLog((String)receiveData.get("protocol"));
+				printLog(receiveData);
 				switch ((String)receiveData.get("protocol")) {
+				
+					case "dummy": {
+						sendData.put("protocol", "dummy");
+						howToSend = HowToSend.SEND_TO_SELF;
+					}break;
 
 					// SignUpState
-					//signUp: È¸¿ø°¡ÀÔ
+					//signUp: È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½q
 					case "signUp": {
 						User user=new User((String) receiveData.get("ID"),(String) receiveData.get("password"));
 						sendData.put("protocol", "signUp");
@@ -163,7 +168,6 @@ public class Server extends JFrame{
 					}break;
 					
 					// LobbyState
-					
 					case "initRoom":{
 						sendData.put("protocol", "initRoom");
 						sendData.put("roomId", (double)receiveData.get("roomId"));
@@ -308,7 +312,7 @@ public class Server extends JFrame{
 				if(sendData.get("protocol")==null){
 					printLog(sendData);
 				}
-				// ³¡
+				// ï¿½ï¿½
 				switch (howToSend) {
 				
 					case HowToSend.SEND_TO_SELF: {

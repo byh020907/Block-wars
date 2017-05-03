@@ -80,8 +80,7 @@ public class LobbyState extends GameState{
 		try {
 			
 			Network.init();
-			receiveLoop=new ReceiveLoop();
-			receiveLoop.start();
+			
 			Thread.sleep(1);
 			
 			JSONObject data3=new JSONObject();
@@ -89,7 +88,7 @@ public class LobbyState extends GameState{
 			Network.send(data3, Network.ia, Network.port);
 			Thread.sleep(1);
 			
-			//·Îºñ¿¡ ÀÔÀå (id=1.1)
+			//ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ (id=1.1)
 			{
 				JSONObject data1=new JSONObject();
 				data1.put("protocol", "initRoom");
@@ -111,8 +110,6 @@ public class LobbyState extends GameState{
 
 	@Override
 	public void reset() {
-		receiveLoop.stop();
-		receiveLoop=null;
 		UI.list=new ConcurrentHashMap<Double,UI>();
 	}
 	boolean flag=false;
@@ -149,7 +146,7 @@ public class LobbyState extends GameState{
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
 			System.out.println(receiveData.get("protocol"));
-			//Ã³¸®
+			//Ã³ï¿½ï¿½
 			switch((String)receiveData.get("protocol")){
 			
 				case "initRoom":{

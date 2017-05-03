@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.blockwars.CallbackAble;
 import com.blockwars.CallbackEvent;
 import com.blockwars.UI.UI;
 import com.blockwars.UI.UI_Background;
@@ -73,14 +74,10 @@ public class LoginState extends GameState{
 	
 	protected void network(){
 		Network.init();
-		receiveLoop=new ReceiveLoop();
-		receiveLoop.start();
 	}
 	
 	@Override
 	public void reset() {
-		receiveLoop.stop();
-		receiveLoop=null;
 		UI.list=new ConcurrentHashMap<Double,UI>();
 	}
 	boolean flag=false;
@@ -116,17 +113,17 @@ public class LoginState extends GameState{
 		try {
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-			//Ã³¸®
-			System.out.println((String)receiveData.get("protocol"));
+			//Ã³ï¿½ï¿½
+			System.out.println((String)receiveData.get("protocol")+" in loginState");
 			switch((String)receiveData.get("protocol")){
 				case "login":{
 					if((boolean)receiveData.get("isExist")){
 						JSONObject j=(JSONObject)receiveData.get("user");
 						user=gson.fromJson(j.toString(), User.class);
 						flag=true;
-						System.out.println(user.ID+"´ÔÀÌ ·Î±×ÀÎÇÏ¼Ì½À´Ï´Ù.");
+						System.out.println(user.ID+"ë¡œê·¸ì¸ ì™„ë£Œ.");
 					}else{
-						System.out.println("¾ø´Â °èÁ¤ÀÔ´Ï´Ù.");
+						System.out.println("ì—†ëŠ” ê³„ì •ì…ë‹ˆë‹¤.");
 					}
 				}break;
 			}

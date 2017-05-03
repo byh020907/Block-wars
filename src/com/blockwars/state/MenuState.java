@@ -32,7 +32,7 @@ public class MenuState extends GameState{
 		bb.setDepth(0.2);
 		bb.clickEvent=new CallbackEvent(){
 			public void callbackMethod(){
-				gsm.setState(GameStateManager.MAINGAME_STATE);
+				gsm.setState(GameStateManager.SIGN_UP_STATE);
 			}
 		};
 		AudioPlayer.BACKGROUND.play();

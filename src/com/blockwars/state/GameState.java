@@ -9,10 +9,7 @@ import org.json.simple.parser.JSONParser;
 
 import com.blockwars.graphics.Screen;
 import com.blockwars.network.Network;
-import com.blockwars.state.GameState.ReceiveLoop;
-import com.blockwars.state.GameState.SendLoop;
 import com.google.gson.Gson;
-import com.sun.glass.events.WindowEvent;
 
 public abstract class GameState {
 
@@ -34,31 +31,4 @@ public abstract class GameState {
 	public abstract void draw(Graphics2D g2D);
 	public abstract void sendData();
 	public abstract void receiveData();
-	
-	public SendLoop sendLoop;
-	public ReceiveLoop receiveLoop;
-	
-	public class SendLoop extends Thread{
-		public SendLoop(){
-			this.setName("SendLoop");
-		}
-		@Override
-		public void run() {
-			while(true){
-				sendData();
-			}
-		}
-	}
-	
-	public class ReceiveLoop extends Thread{
-		public ReceiveLoop(){
-			this.setName("ReceiveLoop");
-		}
-		@Override
-		public void run() {
-			while(true){
-				receiveData();
-			}
-		}
-	}
 }

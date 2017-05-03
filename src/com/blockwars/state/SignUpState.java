@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.blockwars.CallbackAble;
 import com.blockwars.CallbackEvent;
 import com.blockwars.UI.UI;
 import com.blockwars.UI.UI_Background;
@@ -18,8 +19,6 @@ import com.blockwars.game.Game;
 import com.blockwars.game.Resource;
 import com.blockwars.graphics.Screen;
 import com.blockwars.network.Network;
-import com.blockwars.state.GameState.ReceiveLoop;
-import com.blockwars.state.GameState.SendLoop;
 import com.google.gson.Gson;
 
 public class SignUpState extends GameState{
@@ -80,15 +79,11 @@ public class SignUpState extends GameState{
 	
 	@Override
 	protected void network() {
-		System.out.println(socket.getLocalPort());
-		receiveLoop=new ReceiveLoop();
-		receiveLoop.start();
+		Network.init();
 	}
 	
 	@Override
 	public void reset() {
-		receiveLoop.stop();
-		receiveLoop=null;
 		UI.list=new ConcurrentHashMap<Double,UI>();
 	}
 	boolean flag=false;
@@ -124,14 +119,15 @@ public class SignUpState extends GameState{
 		try {
 			socket.receive(receivePacket);
 			JSONObject receiveData=(JSONObject) jsonParser.parse(new String(receivePacket.getData(), 0, receivePacket.getLength()));
-			//Ã³¸®
+			//Ã³ï¿½ï¿½
 			System.out.println((String)receiveData.get("protocol"));
 			switch((String)receiveData.get("protocol")){
 				case "signUp":{
 					if(!(boolean)receiveData.get("isExist")){
 						flag=true;
+						System.out.println("íšŒì›ê°€ì…ì„±ê³µ");
 					}else{
-						System.out.println("¾ÆÀÌµğ È¤Àº ºñ¹Ğ¹øÈ£°¡ °ãÄ¨´Ï´Ù.");
+						System.out.println("ì´ë¯¸ì¡´ì¬í•˜ëŠ” ì•„ì´ë””ì…ë‹ˆë‹¤.");
 					}
 				}break;
 			}
